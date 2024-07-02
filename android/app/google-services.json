@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "778896359981",
+    "project_id": "todotrek-c2987",
+    "storage_bucket": "todotrek-c2987.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:778896359981:android:41c8e89d2f2c80d12eaea4",
+        "android_client_info": {
+          "package_name": "com.todotrek"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJefESObjPRl4x8fEE5jG8mnZLi4DuSVw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

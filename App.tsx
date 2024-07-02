@@ -5,9 +5,10 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, { useEffect, useState } from 'react';
+
 import {
+  Pressable,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -16,83 +17,98 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NavigationContainer } from '@react-navigation/native';
+import Splash from './src/components/Splash';
+import HomeScreen from './src/components/HomeScreen';
+import SignupScreen from './src/components/SignUpScreen';
+import Tasks from './src/components/Tasks';
+import LoginScreen from './src/components/LoginScreen';
+import TasksContextProvider from './src/components/TasksContextProvider';
+import LeftChevron from 'react-native-vector-icons/AntDesign';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
+const Stack = createNativeStackNavigator();
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const checkLoginState = async () => {
+      const loggedIn = await AsyncStorage.getItem('isLoggedIn');
+      setIsLoggedIn(loggedIn === 'true');
+    };
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+    checkLoginState();
+  }, []);
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <TasksContextProvider>
+    <NavigationContainer>
+       <Stack.Navigator initialRouteName={"Splash"}>
+      <Stack.Screen
+        name="Splash"
+        component={Splash}
+        options={{ title: 'Home', headerShown: false }}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={({ navigation }) => ({
+          headerTitle: 'Home',
+          headerTitleStyle: {
+            fontWeight: '200',
+            fontSize: 25
+          },
+          headerStyle: {
+            backgroundColor: '#001d76',
+          },
+          headerTintColor: '#fff',
+          headerLeft: () => (
+            <Pressable
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+            </Pressable>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{ title: 'Home', headerShown: false }}
+      />
+      <Stack.Screen
+        name="SignUpScreen"
+        component={SignupScreen}
+        options={{ title: 'Home', headerShown: false }}
+      />
+      <Stack.Screen
+        name="Tasks"
+        component={Tasks}
+        options={({ navigation }) => ({
+          headerTitle: 'Tasks',
+          headerTitleStyle: {
+            fontWeight: '200',
+            fontSize: 25
+          },
+          headerStyle: {
+            backgroundColor: '#001d76',
+          },
+          headerTintColor: '#fff',
+          headerLeft: () => (
+            <Pressable
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <LeftChevron name="left" size={22} color="grey" style={{ color: 'white', marginRight: 20 }} /> 
+            </Pressable>
+          ),
+        })}
+      />
+      </Stack.Navigator>
+    </NavigationContainer>
+    </TasksContextProvider>
   );
 }
 
